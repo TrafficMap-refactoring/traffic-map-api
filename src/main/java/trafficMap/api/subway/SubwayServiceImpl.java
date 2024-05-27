@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import trafficMap.api.subway.subwayDto.SubwayInformDTO;
+import trafficMap.api.subway.subwayDto.SubwayWheelChairDTO;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -159,5 +160,10 @@ public class SubwayServiceImpl implements SubwayService {
 
         }
 
+    }
+
+    @Override
+    public List<SubwayWheelChairDTO> subwayWheelchair(String name) {
+        return null;
     }
 }

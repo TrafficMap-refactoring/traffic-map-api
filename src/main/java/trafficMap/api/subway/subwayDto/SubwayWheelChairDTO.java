@@ -11,9 +11,9 @@ public class SubwayWheelChairDTO {
     private String dtlLoc;
     private String exitNo;
     private String grndDvNmFr;
-    private String grnmDvNmTo;
-    private String runStinFlorFr;
-    private String runStinFlorTo;
+    private String grndDvNmTo;
+    private Long runStinFlorFr;
+    private Long runStinFlorTo;
 
     /*
     dtlLoc

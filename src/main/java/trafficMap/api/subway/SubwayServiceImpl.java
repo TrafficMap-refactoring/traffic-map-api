@@ -1,6 +1,7 @@
 package trafficMap.api.subway;
 
 
+import lombok.SneakyThrows;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,12 +17,16 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import trafficMap.api.subway.subwayDto.SubwayInformDTO;
+import trafficMap.api.subway.subwayDto.SubwayNumDTO;
+import trafficMap.api.subway.subwayDto.SubwayWheelChairDTO;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SubwayServiceImpl implements SubwayService {
@@ -31,6 +36,12 @@ public class SubwayServiceImpl implements SubwayService {
 
     @Value("${subway.api.key}")
     String subway_apikey;
+
+    @Value("${subway.wheelchair.url}")
+    String wheelchair_url;
+
+    @Value("${subway.wheelchair.api.key}")
+    String wheelchair_apikey;
 
     @Override
     public List<SubwayInformDTO> searchSubwayByName(String name) {
@@ -159,5 +170,112 @@ public class SubwayServiceImpl implements SubwayService {
 
         }
 
+    }
+
+    @Override
+    public List<SubwayWheelChairDTO> subwayWheelchair(String name) {
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders(); //헤더
+        restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8)); // 한글깨짐 방지
+
+        SubwayNumDTO subwayNumDto = new SubwayNumDTO();
+        try {
+            subwayNumDto = callSubwayNum().get(name);
+        }
+        catch(Exception e){
+            System.out.println("검색 안됨: "+name);
+            return null;
+        }
+
+        String lnCd = subwayNumDto.getLN_CD();
+        String stinCd = subwayNumDto.getSTIN_CD();
+        String railOprIsttCd = subwayNumDto.getRAIL_OPR_ISTT_CD();
+
+
+        //URI 생성
+        UriComponents uri = UriComponentsBuilder
+                .fromHttpUrl(wheelchair_url)
+                .queryParam("serviceKey", wheelchair_apikey)
+                .queryParam("format", "json")
+                .queryParam("railOprIsttCd", railOprIsttCd) //철도운영기관코드
+                .queryParam("lnCd", lnCd) // 선코드
+                .queryParam("stinCd", stinCd) // 역코드
+                .build(true);
+
+        //response
+        ResponseEntity<String> result = restTemplate.exchange(uri.toUri(), HttpMethod.GET, new HttpEntity<String>(headers), String.class);
+
+        JSONParser parser = new JSONParser();
+        JSONObject object = null;
+        try {
+            object = (JSONObject) parser.parse(result.getBody());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        JSONObject header = (JSONObject) object.get("header");
+
+
+
+
+        if (header.get("resultCnt").toString().equals("0")) {// 만약 휠체어리프트가 없는 역이면
+            return null;
+        }
+
+        else { // 휠체어 리프트가 있는 역이면
+            JSONArray body = (JSONArray) object.get("body");
+            List<SubwayWheelChairDTO> dtos = new ArrayList<>();
+            for(int i=0; i<body.size(); i++) { // 개수만큼 반복
+                JSONObject array = (JSONObject) body.get(i);
+                SubwayWheelChairDTO wheelchairDto = new SubwayWheelChairDTO();
+
+                String dtlLoc = (String) array.get("dtlLoc"); // 상세위치
+                String exitNo = (String) array.get("exitNo"); // 출구번호
+                String grndDvNmFr = (String) array.get("grndDvNmFr"); // 운행시작(지상/지하)
+                String grndDvNmTo = (String) array.get("grndDvNmTo"); // 운행종료(지상/지하)
+                Long runStinFlorFr = (Long) array.get("runStinFlorFr"); // 운행시작층
+                Long runStinFlorTo = (Long) array.get("runStinFlorTo"); // 운행종료층
+
+                wheelchairDto.setDtlLoc(dtlLoc);
+                wheelchairDto.setExitNo(exitNo);
+                wheelchairDto.setGrndDvNmFr(grndDvNmFr);
+                wheelchairDto.setGrndDvNmTo(grndDvNmTo);
+                wheelchairDto.setRunStinFlorFr(runStinFlorFr);
+                wheelchairDto.setRunStinFlorTo(runStinFlorTo);
+
+                dtos.add(i, wheelchairDto);
+            }
+            return dtos;
+        }
+    }
+
+    @SneakyThrows
+    public Map<String,SubwayNumDTO> callSubwayNum(){
+
+        File doc = new File(new File("./src/main/resources/SubwayNumber.txt").getCanonicalPath());
+        BufferedReader obj = new BufferedReader(new InputStreamReader(new FileInputStream(doc), "utf-8"));
+        String[] Name;
+        String str;
+        String RAIL_OPR_ISTT_CD;
+        String LN_CD;
+        String STIN_CD;
+        String SubwayName;
+        String test;
+
+        Map<String,SubwayNumDTO> map = new HashMap<String,SubwayNumDTO>();
+        while((str=obj.readLine())!=null){
+            Name = str.split("\\t");
+
+            SubwayName = Name[3]+" "+Name[5];
+            String SubwayName2=SubwayName.replaceAll("\\(.*?\\)","");
+
+            SubwayNumDTO subwayNumDto = new SubwayNumDTO();
+            subwayNumDto.setRAIL_OPR_ISTT_CD(Name[0]);
+            subwayNumDto.setLN_CD(Name[2]);
+            subwayNumDto.setSTIN_CD(Name[4]);
+
+            map.put(SubwayName2, subwayNumDto);
+        }
+        return map;
     }
 }

@@ -7,13 +7,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import trafficMap.api.subway.subwayDto.SubwayInformDTO;
@@ -22,7 +19,6 @@ import trafficMap.api.subway.subwayDto.SubwayWheelChairDTO;
 
 import java.io.*;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,10 +42,10 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayInformDTO> searchSubwayByName(String name) {
 
-        //RestTemplate : REST API 호출이후 응답을 받을 때까지 기다리는 동기방식
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders(); //헤더
-        restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8)); // 한글깨짐 방지
+        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(subway_url);
+        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
+
+        WebClient webClient = WebClient.builder().uriBuilderFactory(factory).baseUrl(subway_url).build();
 
         String encodedName;
         try {
@@ -63,8 +59,8 @@ public class SubwayServiceImpl implements SubwayService {
                 .path(subway_apikey + "/json/realtimeStationArrival/0/15/" + encodedName)
                 .build(true);
 
-        //response
-        ResponseEntity<String> result = restTemplate.exchange(uri.toUri(), HttpMethod.GET, new HttpEntity<String>(headers), String.class);
+        ResponseEntity<String> result = webClient.get().uri(uri.toUri()).retrieve().toEntity(String.class).block();
+
 
         //받아온 JSON 데이터 가공
         //json parser
@@ -175,9 +171,10 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayWheelChairDTO> subwayWheelchair(String name) {
 
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders(); //헤더
-        restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8)); // 한글깨짐 방지
+        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(wheelchair_url);
+        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
+
+        WebClient webClient = WebClient.builder().uriBuilderFactory(factory).baseUrl(wheelchair_url).build();
 
         SubwayNumDTO subwayNumDto = new SubwayNumDTO();
         try {
@@ -194,17 +191,15 @@ public class SubwayServiceImpl implements SubwayService {
 
 
         //URI 생성
-        UriComponents uri = UriComponentsBuilder
-                .fromHttpUrl(wheelchair_url)
+        ResponseEntity<String> result = webClient.get().uri(uriBuilder -> uriBuilder.path("")
                 .queryParam("serviceKey", wheelchair_apikey)
                 .queryParam("format", "json")
                 .queryParam("railOprIsttCd", railOprIsttCd) //철도운영기관코드
                 .queryParam("lnCd", lnCd) // 선코드
                 .queryParam("stinCd", stinCd) // 역코드
-                .build(true);
+                .build(true)).retrieve().toEntity(String.class).block();
 
         //response
-        ResponseEntity<String> result = restTemplate.exchange(uri.toUri(), HttpMethod.GET, new HttpEntity<String>(headers), String.class);
 
         JSONParser parser = new JSONParser();
         JSONObject object = null;
@@ -219,6 +214,7 @@ public class SubwayServiceImpl implements SubwayService {
 
 
         if (header.get("resultCnt").toString().equals("0")) {// 만약 휠체어리프트가 없는 역이면
+            System.out.println("휠체어 리프트가 없습니다.");
             return null;
         }
 

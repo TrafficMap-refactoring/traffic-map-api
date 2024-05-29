@@ -3,6 +3,7 @@ package trafficMap.api.find.tmap.web;
 import lombok.AllArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 import trafficMap.api.find.tmap.service.Tmap;
 import trafficMap.api.find.tmap.service.TmapService;
 
@@ -16,10 +17,18 @@ public class TmapController {
 
   private final TmapService tmapService;
 
-  @ResponseBody
-  @PostMapping
-  public List<Tmap.tmap> FindByAPI(@RequestParam("keyword") String keyword, @RequestParam("longitude") double longitude, @RequestParam("latitude") double latitude) throws UnsupportedEncodingException, ParseException {
-    return tmapService.selectAddress(keyword, longitude, latitude); //티맵 api
+  /**
+   * tmap API : POI 명칭 검색
+   * @param keyword   검색어
+   * @param longitude 경도
+   * @param latitude  위도
+   * @return
+   */
+  @GetMapping("/tmap")
+  public Mono<String> getTmapData(@RequestParam("keyword") String keyword,
+                                  @RequestParam("longitude") double longitude,
+                                  @RequestParam("latitude") double latitude) {
+    return tmapService.getTmapData(keyword, longitude, latitude);
   }
 
 }

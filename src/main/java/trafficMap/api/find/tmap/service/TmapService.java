@@ -1,10 +1,12 @@
 package trafficMap.api.find.tmap.service;
 
 import org.json.simple.parser.ParseException;
+import reactor.core.publisher.Mono;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface TmapService {
-  List<Tmap.tmap> selectAddress(String name, double longitude, double latitude) throws UnsupportedEncodingException, ParseException; // 티맵 API로 명칭 검색
+
+  Mono<String> getTmapData(String keyword, double longitude, double latitude);
 }

@@ -43,7 +43,7 @@ public class SubwayController {
     @GetMapping("/elevator")
     public List<SubwayElevatorDTO> subwayElevator(@RequestParam("name") String name){
 
-        return null;
+        return subwayService.subwayElevator(name);
     }
 
     @ResponseBody

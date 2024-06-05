@@ -37,6 +37,9 @@ public class SubwayServiceImpl implements SubwayService {
     @Value("${subway.moveElevator.url}")
     String moveUrl;
 
+    @Value("${subway.elevator.url}")
+    String elevatorUrl;
+
     @Override
     public List<SubwayInformDTO> searchSubwayByName(String name) {
 
@@ -239,8 +242,80 @@ public class SubwayServiceImpl implements SubwayService {
         }
     }
 
+    @Override
     public List<SubwayElevatorDTO> subwayElevator(String name) {
-        return null;
+
+        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(elevatorUrl);
+        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
+
+        WebClient webClient = WebClient.builder().uriBuilderFactory(factory).baseUrl(elevatorUrl).build();
+
+
+        SubwayNumDTO subwayNumDto = new SubwayNumDTO();
+        try {
+            subwayNumDto = callSubwayNum().get(name);
+        } catch (Exception e) {
+            System.out.println("검색 안됨: " + name);
+            return null;
+        }
+
+        String lnCd = subwayNumDto.getLN_CD();
+        String stinCd = subwayNumDto.getSTIN_CD();
+        String railOprIsttCd = subwayNumDto.getRAIL_OPR_ISTT_CD();
+
+
+        //URI 생성
+        ResponseEntity<String> result = webClient.get().uri(uriBuilder -> uriBuilder.path("")
+                .queryParam("serviceKey", subway_data_apikey)
+                .queryParam("format", "json")
+                .queryParam("railOprIsttCd", railOprIsttCd) //철도운영기관코드
+                .queryParam("lnCd", lnCd) // 선코드
+                .queryParam("stinCd", stinCd) // 역코드
+                .build(true)).retrieve().toEntity(String.class).block();
+
+        //response
+
+        JSONParser parser = new JSONParser();
+        JSONObject object = null;
+        try {
+            object = (JSONObject) parser.parse(result.getBody());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        JSONObject header = (JSONObject) object.get("header");
+
+
+
+        if (header.get("resultCnt").toString().equals("0")) {// 만약 휠체어리프트가 없는 역이면
+            System.out.println("엘리베이터가 없습니다.");
+            return null;
+        }
+        else { // 휠체어 리프트가 있는 역이면
+            JSONArray body = (JSONArray) object.get("body");
+            List<SubwayElevatorDTO> dtos = new ArrayList<>();
+            for(int i=0; i<body.size(); i++) { // 개수만큼 반복
+                JSONObject array = (JSONObject) body.get(i);
+
+                SubwayElevatorDTO subwayElevatorDTO = new SubwayElevatorDTO();
+
+                String dtlLoc = (String) array.get("dtlLoc"); // 상세위치
+                String exitNo = (String) array.get("exitNo"); // 출구번호
+                String grndDvNmFr = (String) array.get("grndDvNmFr"); // 운행시작(지상/지하)
+                String grndDvNmTo = (String) array.get("grndDvNmTo"); // 운행종료(지상/지하)
+                Long runStinFlorFr = (Long) array.get("runStinFlorFr"); // 운행시작층
+                Long runStinFlorTo = (Long) array.get("runStinFlorTo"); // 운행종료층
+
+                subwayElevatorDTO.setDtlLoc(dtlLoc);
+                subwayElevatorDTO.setExitNo(exitNo);
+                subwayElevatorDTO.setGrndDvNmFr(grndDvNmFr);
+                subwayElevatorDTO.setGrndDvNmTo(grndDvNmTo);
+                subwayElevatorDTO.setRunStinFlorFr(runStinFlorFr);
+                subwayElevatorDTO.setRunStinFlorTo(runStinFlorTo);
+
+                dtos.add(i, subwayElevatorDTO);
+            }
+            return dtos;
+        }
     }
 
     @SneakyThrows
@@ -364,5 +439,7 @@ public class SubwayServiceImpl implements SubwayService {
         }
         return null;
     }
+
+
 
 }

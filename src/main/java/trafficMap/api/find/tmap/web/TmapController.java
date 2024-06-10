@@ -1,13 +1,9 @@
 package trafficMap.api.find.tmap.web;
 
 import lombok.AllArgsConstructor;
-import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 import trafficMap.api.find.tmap.service.Tmap;
 import trafficMap.api.find.tmap.service.TmapService;
-
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @AllArgsConstructor
@@ -25,10 +21,9 @@ public class TmapController {
    * @return
    */
   @GetMapping("/tmap")
-  public Mono<String> getTmapData(@RequestParam("keyword") String keyword,
+  public List<Tmap> getTmapData(@RequestParam("keyword") String keyword,
                                   @RequestParam("longitude") double longitude,
                                   @RequestParam("latitude") double latitude) {
     return tmapService.getTmapData(keyword, longitude, latitude);
   }
-
 }

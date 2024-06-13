@@ -12,5 +12,6 @@ public interface SubwayService {
     List<SubwayWheelChairDTO> subwayWheelchair(String name);
     List<SubwayMoveRouteDTO> subwayMoveRoute(String name);
     List<SubwayElevatorDTO> subwayElevator(String name);
+    List<SubwayToiletDTO> subwayToilet(String name);
 
 }

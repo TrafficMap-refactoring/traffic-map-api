@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import trafficMap.api.subway.subwayDto.SubwayElevatorDTO;
-import trafficMap.api.subway.subwayDto.SubwayInformDTO;
-import trafficMap.api.subway.subwayDto.SubwayMoveRouteDTO;
-import trafficMap.api.subway.subwayDto.SubwayWheelChairDTO;
+import trafficMap.api.subway.subwayDto.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +47,12 @@ public class SubwayController {
     @GetMapping("/elevator/move")
     public List<SubwayMoveRouteDTO> subwayMoveRoute(@RequestParam("name") String name){
         return subwayService.subwayMoveRoute(name);
+    }
+
+    @ResponseBody
+    @GetMapping("/toilet")
+    public List<SubwayToiletDTO> subwayToilet(@RequestParam("name") String name){
+        return subwayService.subwayToilet(name);
     }
 
 

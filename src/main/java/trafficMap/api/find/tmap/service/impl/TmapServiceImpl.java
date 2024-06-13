@@ -23,7 +23,7 @@ public class TmapServiceImpl implements TmapService {
   private final static String TMAP_URL = "https://apis.openapi.sk.com";
 
 
-  private final WebClient tmapWebClient;
+  //private final WebClient tmapWebClient;
 
   /**
    *  tmap API : POI 명칭 검색

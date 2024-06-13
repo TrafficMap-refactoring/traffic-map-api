@@ -24,7 +24,7 @@ public class BusServiceImpl implements BusService{
 
     WebClient webClient = WebClient.builder()
             .baseUrl(BusStop_URL)
-            .defaultHeader("serviceKey", "EgsTc03kPLrCFOJ2KW1/5YspFLjXYP2IXR30xkQISpbFuUTtey98VYSqGu00QhlN99LvCw6oxydxtK/cbD249A==")
+            .defaultHeader("serviceKey", busApiKey)
             .build();
 
 

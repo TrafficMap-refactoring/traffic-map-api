@@ -6,6 +6,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,16 @@ public class SubwayServiceImpl implements SubwayService {
 
     @Value("${subway.toilet.url}")
     String toiletUrl;
+
+
+    private final SubwayNameMap subwayNameMap;
+    private final SubwayPhotoMap subwayPhotoMap;
+
+    @Autowired
+    public SubwayServiceImpl(SubwayNameMap subwayNameMap, SubwayPhotoMap subwayPhotoMap) {
+        this.subwayNameMap = subwayNameMap;
+        this.subwayPhotoMap = subwayPhotoMap;
+    }
 
     @Override
     public List<SubwayInformDTO> searchSubwayByName(String name) {
@@ -182,8 +193,7 @@ public class SubwayServiceImpl implements SubwayService {
 
         SubwayNumDTO subwayNumDto = new SubwayNumDTO();
         try {
-            subwayNumDto = callSubwayNum().get(name);
-            System.out.println("callSubwayNum().get(name) = " + callSubwayNum().get(name));
+            subwayNumDto = subwayNameMap.callNumDTObyName(name);
         } catch (Exception e) {
             System.out.println("검색 안됨: " + name);
             return null;
@@ -256,7 +266,7 @@ public class SubwayServiceImpl implements SubwayService {
 
         SubwayNumDTO subwayNumDto = new SubwayNumDTO();
         try {
-            subwayNumDto = callSubwayNum().get(name);
+            subwayNumDto = subwayNameMap.callNumDTObyName(name);
         } catch (Exception e) {
             System.out.println("검색 안됨: " + name);
             return null;
@@ -321,37 +331,6 @@ public class SubwayServiceImpl implements SubwayService {
         }
     }
 
-    @SneakyThrows
-    public Map<String, SubwayNumDTO> callSubwayNum() {
-
-        File doc = new File(new File("./src/main/resources/SubwayNumber.txt").getCanonicalPath());
-        BufferedReader obj = new BufferedReader(new InputStreamReader(new FileInputStream(doc), "utf-8"));
-        String[] Name;
-        String str;
-        String RAIL_OPR_ISTT_CD;
-        String LN_CD;
-        String STIN_CD;
-        String SubwayName;
-        String test;
-
-        Map<String, SubwayNumDTO> map = new HashMap<String, SubwayNumDTO>();
-        while ((str = obj.readLine()) != null) {
-            Name = str.split("\\t");
-
-            SubwayName = Name[3] + " " + Name[5];
-            String SubwayName2 = SubwayName.replaceAll("\\(.*?\\)", "");
-
-            SubwayNumDTO subwayNumDto = new SubwayNumDTO();
-            subwayNumDto.setRAIL_OPR_ISTT_CD(Name[0]);
-            subwayNumDto.setLN_CD(Name[2]);
-            subwayNumDto.setSTIN_CD(Name[4]);
-
-            map.put(SubwayName2, subwayNumDto);
-        }
-        return map;
-    }
-
-
     @Override
     public List<SubwayMoveRouteDTO> subwayMoveRoute(String name) {
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(moveUrl);
@@ -362,7 +341,7 @@ public class SubwayServiceImpl implements SubwayService {
 
         SubwayNumDTO subwayNumDto = new SubwayNumDTO();
         try {
-            subwayNumDto = callSubwayNum().get(name);
+            subwayNumDto = subwayNameMap.callNumDTObyName(name);
         } catch (Exception e) {
             System.out.println("검색 안됨: " + name);
             return null;
@@ -391,7 +370,6 @@ public class SubwayServiceImpl implements SubwayService {
         }
         JSONObject header = (JSONObject) object.get("header");
 
-        System.out.println("header = " + header);
 
         if (header.get("resultCnt").toString().equals("0")) {// 만약 휠체어리프트가 없는 역이면
             System.out.println("엘리베이터 이동경로가 없습니다.");
@@ -404,7 +382,7 @@ public class SubwayServiceImpl implements SubwayService {
             for (int i = 0; i < body.size(); i++) { // 개수만큼 반복
                 JSONObject array = (JSONObject) body.get(i);
 
-                //System.out.println("array = " + array);
+
 
                 Long mvPathMgNo = (Long) array.get("mvPathMgNo");
                 Long mvTpOrdr = (Long) array.get("mvTpOrdr");
@@ -415,7 +393,7 @@ public class SubwayServiceImpl implements SubwayService {
                 String s = mvPathMgNo+mvPathDvNm;
                 SubwayMoveRouteDTO subwayMoveRouteDTO = dtoMap.getOrDefault(s, new SubwayMoveRouteDTO());
 
-                //System.out.println("GETsubwayMoveRouteDTO = " + subwayMoveRouteDTO);
+
                 List<SubwayMoveRouteDTO.mvDetail> mvDetails = new ArrayList<>();
                 SubwayMoveRouteDTO.mvDetail mvDetail = new SubwayMoveRouteDTO.mvDetail();
                 mvDetail.setMvPathOrdr(mvTpOrdr);
@@ -454,7 +432,7 @@ public class SubwayServiceImpl implements SubwayService {
 
         SubwayNumDTO subwayNumDto = new SubwayNumDTO();
         try {
-            subwayNumDto = callSubwayNum().get(name);
+            subwayNumDto = subwayNameMap.callNumDTObyName(name);
         } catch (Exception e) {
             System.out.println("검색 안됨: " + name);
             return null;
@@ -518,4 +496,13 @@ public class SubwayServiceImpl implements SubwayService {
             return dtos;
         }
     }
+
+    @Override
+    public SubwayPhotoUrlDTO subwayPhotoUrl(String name) {
+
+        SubwayPhotoUrlDTO subwayPhotoUrlDTO = new SubwayPhotoUrlDTO();
+        subwayPhotoUrlDTO.setUrl(subwayPhotoMap.getStationPhotoUrl(name));
+        return subwayPhotoUrlDTO;
+    }
+
 }

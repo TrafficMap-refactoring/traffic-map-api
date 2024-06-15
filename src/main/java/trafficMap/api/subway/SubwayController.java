@@ -55,5 +55,10 @@ public class SubwayController {
         return subwayService.subwayToilet(name);
     }
 
+    @ResponseBody
+    @GetMapping("/photo")
+    public SubwayPhotoUrlDTO subwayPhotoUrl(@RequestParam("name") String name){
+        return subwayService.subwayPhotoUrl(name);
+    }
 
 }

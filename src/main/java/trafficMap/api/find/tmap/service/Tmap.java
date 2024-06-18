@@ -20,7 +20,8 @@ public class Tmap {
     private String roadName; // 도로명
     private String firstBuildNo;  // 건물번호
     private String bizName; // 업종명
-    private String upperBizName; //업종명 대분류
+    private String upperBizName; // 업종명 대분류
+    private String elvtrSttsNm;
 
   @Getter
   @Setter
@@ -41,5 +42,27 @@ public class Tmap {
   @JsonIgnoreProperties(ignoreUnknown = true)
   public static class Pois {
     private List<Tmap> poi;
+  }
+
+  @Getter
+  @Setter
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class Body {
+    private Elevator.Items items;
+  }
+
+  @Getter
+  @Setter
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class Items {
+    private List<Elevator> items;
+  }
+
+  @Getter
+  @Setter
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class ElevatorDto {
+    private String address;
+    private Integer order;
   }
 }

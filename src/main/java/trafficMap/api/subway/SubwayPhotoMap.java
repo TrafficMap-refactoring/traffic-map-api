@@ -24,7 +24,7 @@ public class SubwayPhotoMap {
 
     @SneakyThrows
     private Map<String,String> loadStationData() {
-        try (InputStream is = new FileInputStream("./src/main/resources/서울교통공사_비상대피 안내도 정보.json")) {
+        try (InputStream is = new FileInputStream("./src/main/resources/emergency_evacuation_plan.json")) {
             JSONTokener tokener = new JSONTokener(is);
             JSONObject object = new JSONObject(tokener);
             JSONArray stationData = object.getJSONArray("DATA");

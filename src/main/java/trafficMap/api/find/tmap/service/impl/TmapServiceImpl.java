@@ -3,7 +3,6 @@ package trafficMap.api.find.tmap.service.impl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import lombok.RequiredArgsConstructor;;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,8 +17,8 @@ import reactor.core.publisher.ParallelFlux;
 import reactor.core.scheduler.Schedulers;
 import trafficMap.api.config.ResponseCode;
 import trafficMap.api.config.exception.ApiException;
-import trafficMap.api.find.tmap.service.Elevator;
-import trafficMap.api.find.tmap.service.Tmap;
+import trafficMap.api.find.tmap.service.dto.Elevator;
+import trafficMap.api.find.tmap.service.dto.Tmap;
 import trafficMap.api.find.tmap.service.TmapService;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -28,7 +27,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-@RequiredArgsConstructor
 public class TmapServiceImpl implements TmapService {
   @Value("${tmap.appkey}")
   private String tmapApiKey; // 티맵 API 앱키

@@ -26,5 +26,4 @@ public class TmapController {
                                   @RequestParam("latitude") double latitude) {
     return tmapService.getTmapData(keyword, longitude, latitude);
   }
-
 }

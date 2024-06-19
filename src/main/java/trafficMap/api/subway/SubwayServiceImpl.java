@@ -14,6 +14,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+import trafficMap.api.config.ResponseCode;
+import trafficMap.api.config.exception.ApiException;
 import trafficMap.api.subway.subwayDto.*;
 
 import java.io.*;
@@ -195,8 +197,7 @@ public class SubwayServiceImpl implements SubwayService {
         try {
             subwayNumDto = subwayNameMap.callNumDTObyName(name);
         } catch (Exception e) {
-            System.out.println("검색 안됨: " + name);
-            return null;
+            throw new ApiException(ResponseCode.METHOD_ARGUMENT_NOT_VALID);
         }
 
         String lnCd = subwayNumDto.getLN_CD();
@@ -226,7 +227,6 @@ public class SubwayServiceImpl implements SubwayService {
 
 
         if (header.get("resultCnt").toString().equals("0")) {// 만약 휠체어리프트가 없는 역이면
-            System.out.println("휠체어 리프트가 없습니다.");
             return null;
         } else { // 휠체어 리프트가 있는 역이면
             JSONArray body = (JSONArray) object.get("body");
@@ -268,8 +268,7 @@ public class SubwayServiceImpl implements SubwayService {
         try {
             subwayNumDto = subwayNameMap.callNumDTObyName(name);
         } catch (Exception e) {
-            System.out.println("검색 안됨: " + name);
-            return null;
+            throw new ApiException(ResponseCode.METHOD_ARGUMENT_NOT_VALID);
         }
 
         String lnCd = subwayNumDto.getLN_CD();
@@ -300,7 +299,6 @@ public class SubwayServiceImpl implements SubwayService {
 
 
         if (header.get("resultCnt").toString().equals("0")) {// 만약 휠체어리프트가 없는 역이면
-            System.out.println("엘리베이터가 없습니다.");
             return null;
         }
         else { // 휠체어 리프트가 있는 역이면
@@ -343,8 +341,7 @@ public class SubwayServiceImpl implements SubwayService {
         try {
             subwayNumDto = subwayNameMap.callNumDTObyName(name);
         } catch (Exception e) {
-            System.out.println("검색 안됨: " + name);
-            return null;
+            throw new ApiException(ResponseCode.METHOD_ARGUMENT_NOT_VALID);
         }
 
         String lnCd = subwayNumDto.getLN_CD();
@@ -372,7 +369,7 @@ public class SubwayServiceImpl implements SubwayService {
 
 
         if (header.get("resultCnt").toString().equals("0")) {// 만약 휠체어리프트가 없는 역이면
-            System.out.println("엘리베이터 이동경로가 없습니다.");
+            return null;
 
         } else { // 휠체어 리프트가 있는 역이면
             JSONArray body = (JSONArray) object.get("body");
@@ -418,7 +415,6 @@ public class SubwayServiceImpl implements SubwayService {
 
             return dtos;
         }
-        return null;
     }
 
     @Override
@@ -434,8 +430,7 @@ public class SubwayServiceImpl implements SubwayService {
         try {
             subwayNumDto = subwayNameMap.callNumDTObyName(name);
         } catch (Exception e) {
-            System.out.println("검색 안됨: " + name);
-            return null;
+            throw new ApiException(ResponseCode.METHOD_ARGUMENT_NOT_VALID);
         }
 
         String lnCd = subwayNumDto.getLN_CD();
@@ -466,7 +461,6 @@ public class SubwayServiceImpl implements SubwayService {
 
 
         if (header.get("resultCnt").toString().equals("0")) {// 만약 휠체어리프트가 없는 역이면
-            System.out.println("화장실이 없습니다.");
             return null;
         }
         else { // 휠체어 리프트가 있는 역이면

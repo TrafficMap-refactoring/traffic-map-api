@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import trafficMap.api.bus.busDto.BusArrInfoByRouteDto;
-import trafficMap.api.bus.busDto.BusArrInfoDto;
-import trafficMap.api.bus.busDto.BusInfoDto;
-import trafficMap.api.bus.busDto.BusStopDto;
+import trafficMap.api.bus.busDto.*;
 
 import java.util.List;
 
@@ -35,8 +32,14 @@ public class BusController {
     return busService.getBusArrInfoByRouteList(busRouteId);
   }
 
-  @GetMapping("/businfo")
+  @GetMapping("/businfo") //노선 번호로 노선 정보 조회
   public List<BusInfoDto> getBusInfo(@RequestParam("strSrch") String strSrch){
     return busService.getBusInfoList(strSrch);
   }
+
+  @GetMapping("/routepath")
+  public List<RoutePathDto> getRoutePath(@RequestParam("busRouteId") String busRouteId){
+    return busService.getRoutePath(busRouteId);
+  }
+
 }

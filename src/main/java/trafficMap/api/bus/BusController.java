@@ -37,9 +37,14 @@ public class BusController {
     return busService.getBusInfoList(strSrch);
   }
 
-  @GetMapping("/routepath")
+  @GetMapping("/routepath") //지도 상 노선 경로 좌표
   public List<RoutePathDto> getRoutePath(@RequestParam("busRouteId") String busRouteId){
     return busService.getRoutePath(busRouteId);
+  }
+
+  @GetMapping("/busstopbyroute")
+  public List<BusStopByRouteDto> getBusStopByRoute(@RequestParam("busRouteId") String busRouteId){
+    return busService.getBusStopByRoute(busRouteId);
   }
 
 }

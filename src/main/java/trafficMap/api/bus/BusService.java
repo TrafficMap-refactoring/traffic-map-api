@@ -1,10 +1,7 @@
 package trafficMap.api.bus;
 
 import org.springframework.stereotype.Service;
-import trafficMap.api.bus.busDto.BusArrInfoByRouteDto;
-import trafficMap.api.bus.busDto.BusArrInfoDto;
-import trafficMap.api.bus.busDto.BusInfoDto;
-import trafficMap.api.bus.busDto.BusStopDto;
+import trafficMap.api.bus.busDto.*;
 
 import java.util.List;
 
@@ -16,4 +13,6 @@ public interface BusService {
   List<BusArrInfoByRouteDto> getBusArrInfoByRouteList(String busRouteId);
 
   List<BusInfoDto> getBusInfoList(String strSrch);
+
+  List<RoutePathDto> getRoutePath(String busRouteId);
 }

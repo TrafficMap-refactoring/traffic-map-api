@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import trafficMap.api.bus.busDto.BusArrInfoByRouteDto;
-import trafficMap.api.bus.busDto.BusArrInfoDto;
-import trafficMap.api.bus.busDto.BusInfoDto;
-import trafficMap.api.bus.busDto.BusStopDto;
+import trafficMap.api.bus.busDto.*;
 import trafficMap.api.config.ResponseCode;
 import trafficMap.api.config.exception.ApiException;
 
@@ -50,7 +47,7 @@ public class BusServiceImpl implements BusService{
       try{
         BusStopDto.BusStopResponse res = objectMapper.readValue(result.getBody(), BusStopDto.BusStopResponse.class);
         return res.getMsgBody().getItemList();
-      } catch (JsonProcessingException e){
+      } catch (Exception e){
         throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
       }
     }
@@ -81,7 +78,7 @@ public class BusServiceImpl implements BusService{
       try{
         BusArrInfoDto.BusArrInfoResponse res = objectMapper.readValue(result.getBody(), BusArrInfoDto.BusArrInfoResponse.class);
         return res.getMsgBody().getItemList();
-      }catch(JsonProcessingException e){
+      }catch(Exception e){
         throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
       }
     }
@@ -113,7 +110,7 @@ public class BusServiceImpl implements BusService{
       try{
         BusArrInfoByRouteDto.BusArrInfoByRouteResponse res = objectMapper.readValue(result.getBody(), BusArrInfoByRouteDto.BusArrInfoByRouteResponse.class);
         return res.getMsgBody().getItemList();
-      }catch(JsonProcessingException e){
+      }catch(Exception e){
         throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
       }
     }
@@ -145,7 +142,39 @@ public class BusServiceImpl implements BusService{
       try{
         BusInfoDto.BusInfoResponse res = objectMapper.readValue(result.getBody(), BusInfoDto.BusInfoResponse.class);
         return res.getMsgBody().getItemList();
-      }catch (JsonProcessingException e){
+      }catch (Exception e){
+        throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
+      }
+    }
+
+    return null;
+  }
+
+  private final static String RoutePath_URL = "http://ws.bus.go.kr/api/rest/busRouteInfo/getRoutePath";
+
+  public List<RoutePathDto> getRoutePath(String busRouteId){
+
+    WebClient webClient = WebClient.builder()
+            .baseUrl(RoutePath_URL)
+            .defaultHeader("serviceKey", busApiKey)
+            .build();
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+    ResponseEntity<String> result = webClient.get()
+            .uri(uriBuilder -> uriBuilder.path("")
+                    .queryParam("busRouteId", busRouteId)
+                    .queryParam("resultType", "json")
+                    .build())
+            .retrieve()
+            .toEntity(String.class)
+            .block();
+
+    if(result != null && result.getBody() != null){
+      try{
+        RoutePathDto.RoutePathResponse res = objectMapper.readValue(result.getBody(), RoutePathDto.RoutePathResponse.class);
+        return res.getMsgBody().getItemList();
+      }catch (Exception e){
         throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
       }
     }

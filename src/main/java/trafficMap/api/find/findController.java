@@ -1,7 +1,7 @@
-package trafficMap.api.bus;
+package trafficMap.api.find;
 
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class BusController {
+public class findController {
 }

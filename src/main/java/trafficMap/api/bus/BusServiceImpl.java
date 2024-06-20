@@ -158,6 +158,7 @@ public class BusServiceImpl implements BusService{
             .baseUrl(RoutePath_URL)
             .defaultHeader("serviceKey", busApiKey)
             .build();
+
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -178,6 +179,40 @@ public class BusServiceImpl implements BusService{
         throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
       }
     }
+
+    return null;
+  }
+
+  private final static String BusStopByRoute_URL = "http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute";
+
+  public List<BusStopByRouteDto> getBusStopByRoute(String busRouteId){
+
+    WebClient webClient = WebClient.builder()
+            .baseUrl(BusStopByRoute_URL)
+            .defaultHeader("serviceKey", busApiKey)
+            .build();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+    ResponseEntity<String> result = webClient.get()
+            .uri(uriBuilder -> uriBuilder.path("")
+                    .queryParam("busRouteId", busRouteId)
+                    .queryParam("resultType", "json")
+                    .build())
+            .retrieve()
+            .toEntity(String.class)
+            .block();
+
+    if(result != null && result.getBody() != null){
+      try{
+        BusStopByRouteDto.BusStopByRouteResponse res = objectMapper.readValue(result.getBody(), BusStopByRouteDto.BusStopByRouteResponse.class);
+        return res.getMsgBody().getItemList();
+      }catch (Exception e){
+        throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
+      }
+    }
+
 
     return null;
   }

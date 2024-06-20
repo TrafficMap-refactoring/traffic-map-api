@@ -15,4 +15,6 @@ public interface BusService {
   List<BusInfoDto> getBusInfoList(String strSrch);
 
   List<RoutePathDto> getRoutePath(String busRouteId);
+
+  List<BusStopByRouteDto> getBusStopByRoute(String busRouteId);
 }

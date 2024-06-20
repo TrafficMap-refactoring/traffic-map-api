@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import trafficMap.api.bus.busDto.BusArrInfoByRouteDto;
 import trafficMap.api.bus.busDto.BusArrInfoDto;
+import trafficMap.api.bus.busDto.BusInfoDto;
 import trafficMap.api.bus.busDto.BusStopDto;
 
 import java.util.List;
@@ -111,6 +112,38 @@ public class BusServiceImpl implements BusService{
         BusArrInfoByRouteDto.BusArrInfoByRouteResponse res = objectMapper.readValue(result.getBody(), BusArrInfoByRouteDto.BusArrInfoByRouteResponse.class);
         return res.getMsgBody().getItemList();
       }catch(JsonProcessingException e){
+        e.printStackTrace();
+      }
+    }
+
+    return null;
+  }
+
+  private final static String BusInfo_URL = "http://ws.bus.go.kr/api/rest/busRouteInfo/getBusRouteList";
+
+  public List<BusInfoDto> getBusInfoList(String strSrch){
+
+    WebClient webClient = WebClient.builder()
+            .baseUrl(BusInfo_URL)
+            .defaultHeader("serviceKey", busApiKey)
+            .build();
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+    ResponseEntity<String> result = webClient.get()
+            .uri(uriBuilder -> uriBuilder.path("")
+                    .queryParam("strSrch", strSrch)
+                    .queryParam("resultType", "json")
+                    .build())
+            .retrieve()
+            .toEntity(String.class)
+            .block();
+
+    if(result != null && result.getBody() != null){
+      try{
+        BusInfoDto.BusInfoResponse res = objectMapper.readValue(result.getBody(), BusInfoDto.BusInfoResponse.class);
+        return res.getMsgBody().getItemList();
+      }catch (JsonProcessingException e){
         e.printStackTrace();
       }
     }

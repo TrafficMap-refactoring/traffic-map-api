@@ -14,6 +14,8 @@ import trafficMap.api.bus.busDto.BusArrInfoByRouteDto;
 import trafficMap.api.bus.busDto.BusArrInfoDto;
 import trafficMap.api.bus.busDto.BusInfoDto;
 import trafficMap.api.bus.busDto.BusStopDto;
+import trafficMap.api.config.ResponseCode;
+import trafficMap.api.config.exception.ApiException;
 
 import java.util.List;
 
@@ -49,7 +51,7 @@ public class BusServiceImpl implements BusService{
         BusStopDto.BusStopResponse res = objectMapper.readValue(result.getBody(), BusStopDto.BusStopResponse.class);
         return res.getMsgBody().getItemList();
       } catch (JsonProcessingException e){
-        e.printStackTrace();
+        throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
       }
     }
     return null;
@@ -80,7 +82,7 @@ public class BusServiceImpl implements BusService{
         BusArrInfoDto.BusArrInfoResponse res = objectMapper.readValue(result.getBody(), BusArrInfoDto.BusArrInfoResponse.class);
         return res.getMsgBody().getItemList();
       }catch(JsonProcessingException e){
-        e.printStackTrace();
+        throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
       }
     }
 
@@ -112,7 +114,7 @@ public class BusServiceImpl implements BusService{
         BusArrInfoByRouteDto.BusArrInfoByRouteResponse res = objectMapper.readValue(result.getBody(), BusArrInfoByRouteDto.BusArrInfoByRouteResponse.class);
         return res.getMsgBody().getItemList();
       }catch(JsonProcessingException e){
-        e.printStackTrace();
+        throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
       }
     }
 
@@ -144,7 +146,7 @@ public class BusServiceImpl implements BusService{
         BusInfoDto.BusInfoResponse res = objectMapper.readValue(result.getBody(), BusInfoDto.BusInfoResponse.class);
         return res.getMsgBody().getItemList();
       }catch (JsonProcessingException e){
-        e.printStackTrace();
+        throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
       }
     }
 

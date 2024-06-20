@@ -14,7 +14,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Controller
-@RequestMapping("/subway")
+@RequestMapping("/api/subway")
 public class SubwayController {
 
 

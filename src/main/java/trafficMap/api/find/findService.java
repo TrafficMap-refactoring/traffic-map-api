@@ -1,8 +1,7 @@
-package trafficMap.api.bus;
+package trafficMap.api.find;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public interface BusService {
-
+public interface findService {
 }

@@ -11,11 +11,11 @@ import java.util.List;
 public class BusStopDto {
   private String stId; // 정류소 고유 ID
   private String stNm; // 정류소명
-  private String tmX; // 정류소 좌표 X (WGS84)
-  private String tmY; // 정류소 좌표 Y (WGS84)
-  private String arsId; // 정류소 번호
-  private String posX; // 정류소 좌표 X (GRS80)
-  private String posY; // 정류소 좌표 Y (GRS80)
+  private double tmX; // 정류소 좌표 X (WGS84)
+  private double tmY; // 정류소 좌표 Y (WGS84)
+  private int arsId; // 정류소 번호
+  private double posX; // 정류소 좌표 X (GRS80)
+  private double posY; // 정류소 좌표 Y (GRS80)
 
 
 

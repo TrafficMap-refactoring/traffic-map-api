@@ -12,19 +12,19 @@ import java.util.List;
 
 @AllArgsConstructor
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/way")
 public class WayController {
 
     @Autowired
     WayService wayService;
 
-    @GetMapping("/way")
+    @GetMapping
     @ResponseBody
     public List<WayDTO> FindWay(double startX, double startY, double endX, double endY, String startName, String endName, Number option) {
         return wayService.findWay(startX, startY, endX, endY, startName, endName, option);
     }
 
-    @GetMapping("/way/trans")
+    @GetMapping("/trans")
     @ResponseBody
     public String FindTransWay4(String sName,String eName){ // 카카오 대중교통 길찾기 연결 -> 출발지, 도착지 이름 or 주소 입력하는 방법
         return wayService.findTransWay(sName, eName);

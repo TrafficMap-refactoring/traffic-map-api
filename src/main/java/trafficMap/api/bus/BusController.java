@@ -12,7 +12,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/bus")
+@RequestMapping("/bus")
 public class BusController {
   private final BusService busService;
 

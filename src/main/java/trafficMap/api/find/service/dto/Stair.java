@@ -1,4 +1,4 @@
-package trafficMap.api.find.tmap.service.dto;
+package trafficMap.api.find.service.dto;
 
 import lombok.Getter;
 import lombok.Setter;

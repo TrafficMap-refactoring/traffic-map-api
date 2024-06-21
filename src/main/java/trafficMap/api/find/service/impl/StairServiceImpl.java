@@ -1,8 +1,8 @@
-package trafficMap.api.find.tmap.service.impl;
+package trafficMap.api.find.service.impl;
 
 import org.springframework.stereotype.Service;
-import trafficMap.api.find.tmap.service.StairService;
-import trafficMap.api.find.tmap.service.dto.Stair;
+import trafficMap.api.find.service.StairService;
+import trafficMap.api.find.service.dto.Stair;
 
 import java.io.*;
 import java.util.ArrayList;

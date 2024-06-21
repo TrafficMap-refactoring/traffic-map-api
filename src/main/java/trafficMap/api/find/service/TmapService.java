@@ -1,9 +1,8 @@
-package trafficMap.api.find.tmap.service;
+package trafficMap.api.find.service;
 
-import trafficMap.api.find.tmap.service.dto.Elevator;
-import trafficMap.api.find.tmap.service.dto.Tmap;
+import trafficMap.api.find.service.dto.Elevator;
+import trafficMap.api.find.service.dto.Tmap;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface TmapService {

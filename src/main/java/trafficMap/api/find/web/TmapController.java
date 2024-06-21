@@ -1,9 +1,9 @@
-package trafficMap.api.find.tmap.web;
+package trafficMap.api.find.web;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import trafficMap.api.find.tmap.service.dto.Tmap;
-import trafficMap.api.find.tmap.service.TmapService;
+import trafficMap.api.find.service.dto.Tmap;
+import trafficMap.api.find.service.TmapService;
 import java.util.List;
 
 @AllArgsConstructor

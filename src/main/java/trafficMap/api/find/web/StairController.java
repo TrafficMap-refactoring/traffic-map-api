@@ -1,19 +1,19 @@
-package trafficMap.api.find.tmap.web;
+package trafficMap.api.find.web;
 
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import trafficMap.api.find.tmap.service.StairService;
-import trafficMap.api.find.tmap.service.dto.Stair;
+import trafficMap.api.find.service.StairService;
+import trafficMap.api.find.service.dto.Stair;
 
 import java.util.List;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/find")
-public class StariController {
+public class StairController {
 
   private final StairService stairService;
 

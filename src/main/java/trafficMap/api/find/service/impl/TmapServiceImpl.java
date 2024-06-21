@@ -6,10 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -40,6 +37,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,6 +67,7 @@ public class TmapServiceImpl implements TmapService {
     // TMAP POI 명칭 검색 API
     WebClient webClient = WebClient.builder()
         .baseUrl(TMAP_URL)
+        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .defaultHeader("appKey", tmapApiKey)
         .build();
 
@@ -203,6 +202,7 @@ public class TmapServiceImpl implements TmapService {
         .queryParam("numOfRows",1)
         .queryParam("pageNo",1)
         .build())
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .retrieve()
         .bodyToMono(String.class);
   }
@@ -234,8 +234,11 @@ public class TmapServiceImpl implements TmapService {
   @Override
   public String getReverseGeocoding(String latitude, String longitude) {
     RestTemplate restTemplate = new RestTemplate();
-    HttpHeaders headers = new HttpHeaders(); //헤더
     restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8)); // 한글깨짐 방지
+
+    HttpHeaders headers = new HttpHeaders(); //헤더
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
     try {
       //URI 생성

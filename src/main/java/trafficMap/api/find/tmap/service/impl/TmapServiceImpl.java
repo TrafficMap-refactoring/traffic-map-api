@@ -3,11 +3,20 @@ package trafficMap.api.find.tmap.service.impl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -45,6 +54,7 @@ public class TmapServiceImpl implements TmapService {
 
   private final static String TMAP_URL = "https://apis.openapi.sk.com";
   private final static String ELEVATOR_URL = "http://openapi.elevator.go.kr";
+  private final static String TMAP_REVERSE_GEO_URL = "https://apis.openapi.sk.com/tmap/geo/reversegeocoding";
 
   /**
    *  TMAP POI 명칭 검색 + 승강기 운행정보 조회
@@ -211,5 +221,40 @@ public class TmapServiceImpl implements TmapService {
         .sort(Comparator.comparingInt(Elevator.OrderedResult::getOrder)) // order 순 정렬
         .map(Elevator.OrderedResult::getResult)
         .parallel(); // ParallelFlux<String>로 변환하기 위함
+  }
+
+  /**
+   * TMAP 지오코딩
+   * @param latitude  위도
+   * @param longitude 경도
+   * @return
+   */
+  @Override
+  public String getReverseGeocoding(String latitude, String longitude) {
+    RestTemplate restTemplate = new RestTemplate();
+    HttpHeaders headers = new HttpHeaders(); //헤더
+    restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8)); // 한글깨짐 방지
+
+    try {
+      //URI 생성
+      UriComponents uri = UriComponentsBuilder
+              .fromUriString(TMAP_REVERSE_GEO_URL)
+              .queryParam("lon", longitude)
+              .queryParam("lat", latitude)
+              .queryParam("version", 1)
+              .queryParam("appKey", tmapApiKey)
+              .build(true);
+
+      //response
+      ResponseEntity<String> result = restTemplate.exchange(uri.toUri(), HttpMethod.GET, new HttpEntity<String>(headers), String.class);
+
+      JSONParser parser = new JSONParser();
+      JSONObject object = (JSONObject) parser.parse(result.getBody());
+      JSONObject addressInfo = (JSONObject) object.get("addressInfo");
+
+      return addressInfo.get("fullAddress").toString();
+    } catch (Exception e) {
+      throw new ApiException(ResponseCode.HTTP_INTERFACE_API_ERROR);
+    }
   }
 }

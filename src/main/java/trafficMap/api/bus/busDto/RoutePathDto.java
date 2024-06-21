@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class RoutePathDto {
-  private Integer no; //순번
+  private int no; //순번
   private double gpsX; //좌표X (WGS84)
   private double gpsY; //좌표Y (WGS84)
   private double posX; //좌표X (GRS80)

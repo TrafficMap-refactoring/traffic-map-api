@@ -40,19 +40,13 @@ public class ElevatorServiceImpl implements ElevatorService {
 
             Elevator.ElevatorDto elevatorDto = new Elevator.ElevatorDto();
 
-
-            //일단 테스트로 이제 가공한 데이터를 stairDto에 저장
-
             elevatorDto.setObjectid(Long.valueOf(j));
             elevatorDto.setLatitude(Double.valueOf(lati));
             elevatorDto.setLongitude(Double.valueOf(longt));
 
             dtos.add(j, elevatorDto);
             j += 1;
-
-
         }
-
         return dtos;
         } catch (Exception e) {
             throw new ApiException(ResponseCode.INTERNAL_SERVER_ERROR);

@@ -16,6 +16,7 @@ public class Tmap {
     private String name; // 건물명(시설물 명칭)
     private double frontLat; // 위도
     private double frontLon; // 경도
+    private String upperAddrName;
     private String fullAddressRoad; // 도로명 주소
     private String middleAddrName; // 구
     private String roadName; // 도로명

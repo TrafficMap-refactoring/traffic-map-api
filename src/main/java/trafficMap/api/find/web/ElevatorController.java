@@ -20,7 +20,7 @@ public class ElevatorController {
      * 인천 엘리베이터 위치 조회 API
      * @return
      */
-    @GetMapping(value="/find/incheonElevator")
+    @GetMapping(value="/elevator")
     public List<Elevator.ElevatorDto> getElavators() {
         return elevatorService.getElavators();
     }

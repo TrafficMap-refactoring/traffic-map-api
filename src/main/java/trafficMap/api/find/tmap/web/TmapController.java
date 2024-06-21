@@ -26,4 +26,9 @@ public class TmapController {
                                   @RequestParam("latitude") double latitude) {
     return tmapService.getTmapData(keyword, longitude, latitude);
   }
+  @GetMapping(value="/reverse-geo")
+  public String getReverseGeocoding(@RequestParam("latitude")String latitude,
+                                    @RequestParam("longitude") String longitude) {
+    return tmapService.getReverseGeocoding(latitude, longitude);
+  }
 }

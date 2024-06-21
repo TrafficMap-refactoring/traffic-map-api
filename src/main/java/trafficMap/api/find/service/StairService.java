@@ -1,6 +1,6 @@
-package trafficMap.api.find.tmap.service;
+package trafficMap.api.find.service;
 
-import trafficMap.api.find.tmap.service.dto.Stair;
+import trafficMap.api.find.service.dto.Stair;
 
 import java.io.IOException;
 import java.util.List;

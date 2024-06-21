@@ -11,7 +11,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/find")
+@RequestMapping("/find")
 public class ElevatorController {
 
     private final ElevatorService elevatorService;

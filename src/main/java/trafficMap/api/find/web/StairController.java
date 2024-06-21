@@ -12,7 +12,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/find")
+@RequestMapping("/find")
 public class StairController {
 
   private final StairService stairService;

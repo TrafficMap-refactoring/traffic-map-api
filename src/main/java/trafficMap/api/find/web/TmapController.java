@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/find")
+@RequestMapping("/find")
 public class TmapController {
 
   private final TmapService tmapService;

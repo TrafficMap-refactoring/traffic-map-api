@@ -94,7 +94,6 @@ public class TmapServiceImpl implements TmapService {
         // tmap api 결과 파싱
         Tmap.TmapResponse response = objectMapper.readValue(result.getBody(), Tmap.TmapResponse.class);
         List<Tmap> tmapList = response.getSearchPoiInfo().getPois().getPoi();
-
         // 각 Tmap 객체에 승강기 운행정보 반환
         List<Elevator.ElevatorOrderDto> elevatorOrderDtoList = new ArrayList<>();
 
@@ -107,6 +106,9 @@ public class TmapServiceImpl implements TmapService {
           String address = tmap.getMiddleAddrName() + " " + tmap.getRoadName() + " " + tmap.getFirstBuildNo();
           String encodedAddress = URLEncoder.encode(address, StandardCharsets.UTF_8);
 
+          tmapList.get(i).setFullAddressRoad(
+                  tmap.getUpperAddrName() + ' ' + tmap.getMiddleAddrName() + ' ' +
+                          tmap.getRoadName() + ' ' + tmap.getFirstBuildNo());
           elevatorOrderDto.setAddress(encodedAddress);
           elevatorOrderDto.setOrder(i);
           elevatorOrderDtoList.add(elevatorOrderDto);

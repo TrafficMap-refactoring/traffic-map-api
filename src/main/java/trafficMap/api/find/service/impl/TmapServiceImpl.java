@@ -43,6 +43,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.springframework.web.util.DefaultUriBuilderFactory.*;
+
 @Service
 public class TmapServiceImpl implements TmapService {
   @Value("${tmap.appkey}")
@@ -67,7 +69,6 @@ public class TmapServiceImpl implements TmapService {
     // TMAP POI 명칭 검색 API
     WebClient webClient = WebClient.builder()
         .baseUrl(TMAP_URL)
-        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .defaultHeader("appKey", tmapApiKey)
         .build();
 
@@ -202,7 +203,6 @@ public class TmapServiceImpl implements TmapService {
         .queryParam("numOfRows",1)
         .queryParam("pageNo",1)
         .build())
-        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .retrieve()
         .bodyToMono(String.class);
   }

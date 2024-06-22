@@ -13,7 +13,7 @@ public class BusInfoDto {
   private String busRouteAbrv; //노선 약칭
   private String busRouteId; //노선 ID
   private String busRoutedNm; //노선명
-  private int length; //노선 길이
+  private double length; //노선 길이
   private int routeType; //노선 유형
   private String stStationNm; //기점
   private String edStationNm; //종점

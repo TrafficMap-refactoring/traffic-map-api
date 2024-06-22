@@ -42,7 +42,7 @@ public class BusController {
     return busService.getRoutePath(busRouteId);
   }
 
-  @GetMapping("/busstopbyroute")
+  @GetMapping("/busstopbyroute") //노선이 경유하는 정류소 목록
   public List<BusStopByRouteDto> getBusStopByRoute(@RequestParam("busRouteId") String busRouteId){
     return busService.getBusStopByRoute(busRouteId);
   }

@@ -160,6 +160,48 @@ public class WayServiceImpl implements WayService {
     }
 
     @SneakyThrows
+    public JSONObject findDrawWay(double startX, double startY, double endX, double endY, String startName, String endName, Number option) { // 티맵 도보 길찾기
+        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(tmap_way_url);
+        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
+
+
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // memory size를 제한없음으로 바꿈
+                .build();
+
+//        WebClient wc = WebClient.builder().uriBuilderFactory(factory).baseUrl(tmap_way_url).build();
+        WebClient wc = WebClient.builder().uriBuilderFactory(factory).baseUrl(tmap_way_url).exchangeStrategies(exchangeStrategies).build();
+
+
+        String encodedStartName = URLEncoder.encode(startName, "UTF-8");
+        String encodedEndName = URLEncoder.encode(endName, "UTF-8");
+
+
+        ResponseEntity<String> result = wc.get()
+                .uri(uriBuilder -> uriBuilder.path("/tmap/routes/pedestrian")
+                        .queryParam("version",1)
+                        .queryParam("startX", startX) //시작 경도
+                        .queryParam("startY", startY) // 시작 위도
+                        .queryParam("endX", endX) // 끝 경도
+                        .queryParam("endY", endY) // 끝 위도
+                        .queryParam("startName", encodedStartName) // 출발지 이름
+                        .queryParam("endName", encodedEndName) // 도착지 이름
+                        .queryParam("searchOption", option) // 경로 탐색 옵션
+                        // 0:추천(기본값) / 4:추천+대로우선 / 10:최단 / 30: 최단거리+계단제외
+                        .queryParam("appKey", tmap_apikey) // api appKey
+                        .build())
+                .retrieve() //response 불러옴
+                .toEntity(String.class)
+                .block();
+
+
+        JSONParser parser = new JSONParser();
+        JSONObject object = (JSONObject) parser.parse(result.getBody());
+        return object;
+
+
+    }
+    @SneakyThrows
     public String findTransWay(String sName, String eName) { // 카카오 대중교통 길찾기 연결
         String encodedsName = URLEncoder.encode(sName, "UTF-8");
         String encodedeName = URLEncoder.encode(eName, "UTF-8");

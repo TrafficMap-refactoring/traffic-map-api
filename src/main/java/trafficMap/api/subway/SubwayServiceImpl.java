@@ -1,7 +1,6 @@
 package trafficMap.api.subway;
 
 
-import lombok.SneakyThrows;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -49,11 +48,13 @@ public class SubwayServiceImpl implements SubwayService {
 
     private final SubwayNameMap subwayNameMap;
     private final SubwayPhotoMap subwayPhotoMap;
+    private final SubwayIncheonMap subwayIncheonMap;
 
     @Autowired
-    public SubwayServiceImpl(SubwayNameMap subwayNameMap, SubwayPhotoMap subwayPhotoMap) {
+    public SubwayServiceImpl(SubwayNameMap subwayNameMap, SubwayPhotoMap subwayPhotoMap, SubwayIncheonMap subwayIncheonMap) {
         this.subwayNameMap = subwayNameMap;
         this.subwayPhotoMap = subwayPhotoMap;
+        this.subwayIncheonMap = subwayIncheonMap;
     }
 
     @Override
@@ -499,4 +500,8 @@ public class SubwayServiceImpl implements SubwayService {
         return subwayPhotoUrlDTO;
     }
 
+    @Override
+    public List<String> subwayPhotoIncheon(String name) {
+        return subwayIncheonMap.getIncheonPhoto(name);
+    }
 }

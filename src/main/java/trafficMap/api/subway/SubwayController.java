@@ -61,4 +61,10 @@ public class SubwayController {
         return subwayService.subwayPhotoUrl(name);
     }
 
+    @ResponseBody
+    @GetMapping("/photo2")
+    public List<String> subwayPhotoIncheon(@RequestParam("name") String name){
+        return subwayService.subwayPhotoIncheon(name);
+    }
+
 }

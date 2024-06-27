@@ -27,8 +27,8 @@ public class WayController {
 
     @GetMapping("/trans")
     @ResponseBody
-    public String FindTransWay4(String sName,String eName){ // 카카오 대중교통 길찾기 연결 -> 출발지, 도착지 이름 or 주소 입력하는 방법
-        return wayService.findTransWay(sName, eName);
+    public String FindTransWay4(String sLat,String sLng,String eLat,String eLng){ // 카카오 대중교통 길찾기 연결 -> 출발지, 도착지 이름 or 주소 입력하는 방법
+        return wayService.findTransWay(sLat,sLng,eLat,eLng);
     }
 
     @GetMapping("/draw")

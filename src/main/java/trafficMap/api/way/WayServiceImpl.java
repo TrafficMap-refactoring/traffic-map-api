@@ -202,15 +202,21 @@ public class WayServiceImpl implements WayService {
 
     }
     @SneakyThrows
-    public String findTransWay(String sName, String eName) { // 카카오 대중교통 길찾기 연결
-        String encodedsName = URLEncoder.encode(sName, "UTF-8");
-        String encodedeName = URLEncoder.encode(eName, "UTF-8");
+    public String findTransWay(String sLat,String sLng,String eLat,String eLng) { // 카카오 대중교통 길찾기 연결
+
+        String sP = sLat+","+sLng;
+        String eP = eLat+","+eLng;
+
+        String encodedsName = URLEncoder.encode(sP, "UTF-8");
+        String encodedeName = URLEncoder.encode(eP, "UTF-8");
+        String by = URLEncoder.encode("PUBLICTRANSIT","UTF-8");
 
         //URI 생성
         UriComponents uri = UriComponentsBuilder
                 .fromUriString(kakao_url)
-                .queryParam("sName", encodedsName) //시작 경도
-                .queryParam("eName", encodedeName) // 시작 위도
+                .queryParam("sP", encodedsName) //시작 경도
+                .queryParam("eP", encodedeName) // 시작 위도
+                .queryParam("by",by)
                 .build(true);
 
         return uri.toUriString();

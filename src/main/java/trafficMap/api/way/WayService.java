@@ -11,7 +11,7 @@ public interface WayService {
 
     List<WayDTO> findWay(double startX, double startY, double endX, double endY, String startName, String endName, Number option);
 
-    String findTransWay(String sName, String eName);
+    String findTransWay(String sLat,String sLng,String eLat,String eLng);
     JSONObject findDrawWay(double startX, double startY, double endX, double endY, String startName, String endName, Number option);
 
 }
